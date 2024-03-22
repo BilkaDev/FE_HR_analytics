@@ -1,13 +1,25 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :jobs
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get 'up' => 'rails/health#show', as: :rails_health_check
+  mount_devise_token_auth_for 'User', at: '/api/v1/users', controllers: {
+    registrations: 'api/v1/registrations',
+    sessions: 'api/v1/sessions',
+    passwords: 'api/v1/passwords',
+    confirmations: 'api/v1/confirmations'
+  }
 
-  # Defines the root path route ("/")
+  namespace :api do
+    namespace :v1 do
+      get :status, to: 'health#status'
+      resources :jobs
+    end
+  end
+  # Defines the root path route ("/s)
   # root "posts#index"
+
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
 end

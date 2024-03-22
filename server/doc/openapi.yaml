@@ -1,0 +1,26 @@
+---
+openapi: 3.0.3
+info:
+  title: server
+  version: 1.0.0
+servers: []
+paths:
+  "/api/v1/status":
+    get:
+      summary: status
+      tags:
+      - Api::V1::Health
+      responses:
+        '200':
+          description: return the api status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  online:
+                    type: boolean
+                required:
+                - online
+              example:
+                online: true
